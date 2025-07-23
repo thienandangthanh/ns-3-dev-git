@@ -2,7 +2,7 @@ FROM python:3.13-bookworm
 
 RUN apt-get update && apt-get upgrade -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    g++-10 cmake ninja-build ccache \
+    g++-10 cmake cmake-format ninja-build ccache \
     # python3 python3-dev
     # GNU Scientific Library
     gsl-bin libgsl-dev libgslcblas0 \
@@ -24,6 +24,18 @@ RUN apt-get update && apt-get upgrade -y && \
     # ns-3 requires DPDK v19.11
     # but debian doesn't have that version
     # dpdk dpdk-dev libdpdk-dev dpdk-igb-uio-dkms \
+    # Doxygen
+    doxygen \
+    # Sphinx
+    python3-sphinx \
+    dia \
+    imagemagick \
+    texlive \
+    dvipng \
+    latexmk \
+    texlive-extra-utils \
+    texlive-latex-extra \
+    texlive-font-utils \
     # Emulation with virtual machines and tap bridge
     lxc \
     lxc-templates \
@@ -36,11 +48,15 @@ RUN apt-get update && apt-get upgrade -y && \
     python3-pygraphviz \
     gir1.2-gtk-3.0 \
     ipython3 \
+    # pcap dumping
+    tcpdump \
     && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-RUN python3 -m pip install --user cppyy==3.1.2
+RUN python3 -m pip install --user \
+    cppyy==3.1.2 \
+    ns3
 
 WORKDIR /workspace
 
