@@ -58,7 +58,7 @@ RUN python3 -m pip install --user \
     cppyy==3.1.2 \
     ns3
 
-WORKDIR /workspace
+WORKDIR /opt
 
 # https://www.nsnam.org/docs/models/html/openflow-switch.html
 RUN git clone https://gitlab.com/nsnam/openflow && \
@@ -92,13 +92,13 @@ RUN git clone https://gitlab.com/nsnam/ns-3-dev.git && \
     --enable-python-bindings \
     # MPI conflicts with Python bindings
     --disable-mpi \
-    # --with-brite=/workspace/BRITE \
+    # --with-brite=/opt/BRITE \
     --with-openflow=/usr/local/lib/libopenflow.a \
     && \
     ./ns3 build \
     && \
     ./test.py
 
-WORKDIR /workspace/ns-3-dev
+WORKDIR /workspaces/ns-3-dev
 
 ENTRYPOINT ["/usr/bin/bash"]
