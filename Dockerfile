@@ -50,13 +50,27 @@ RUN apt-get update && apt-get upgrade -y && \
     ipython3 \
     # pcap dumping
     tcpdump \
+    # Add sudo for non-root user
+    sudo \
     && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
+# Create a non-root user
+RUN useradd -m -s /bin/bash ns3user && \
+    usermod -aG sudo ns3user && \
+    echo 'ns3user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Switch to non-root user
+USER ns3user
+
 RUN python3 -m pip install --user \
     cppyy==3.1.2 \
     ns3
+
+# Create workdir with proper ownership
+RUN sudo mkdir -p /opt && \
+    sudo chown ns3user:ns3user /opt
 
 WORKDIR /opt
 
@@ -65,7 +79,7 @@ RUN git clone https://gitlab.com/nsnam/openflow && \
     cd openflow && \
     cmake -B build && \
     cmake --build build && \
-    cmake --install build
+    sudo cmake --install build
 
 # https://gitlab.com/nsnam/BRITE
 RUN git clone https://gitlab.com/nsnam/BRITE && \
@@ -98,6 +112,10 @@ RUN git clone https://gitlab.com/nsnam/ns-3-dev.git && \
     ./ns3 build \
     && \
     ./test.py
+
+# Create workdir with proper ownership
+RUN sudo mkdir -p /workspaces/ns-3-dev && \
+    sudo chown ns3user:ns3user /workspaces/ns-3-dev
 
 WORKDIR /workspaces/ns-3-dev
 
