@@ -19,6 +19,8 @@ RUN apt-get update && apt-get upgrade -y && \
     libeigen3-dev \
     # NetAnim animator
     qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools \
+    # GnuPlot
+    gnuplot \
     ssh git \
     # DPDK
     # ns-3 requires DPDK v19.11
